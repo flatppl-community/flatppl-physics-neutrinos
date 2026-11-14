@@ -1,10 +1,8 @@
 # flatppl-physics-neutrinos
 
-[Function reference](docs/reference.md)
+[Function reference](docs/reference.md) · [Live example](https://live.flatppl.org/#model=https%3A%2F%2Fraw.githubusercontent.com%2Fflatppl-community%2Fflatppl-physics-neutrinos%2Fmain%2Fexamples%2Fplayground.flatppl&target=Pi_post)
 
-Three-flavour vacuum oscillations, coherent constant and layered matter
-propagation, spherical-shell paths and neutrino mass observables in FlatPPL.
-Library version **0.1**.
+Three-flavour neutrino oscillations, coherent matter propagation, spherical-shell paths, and mass observables for FlatPPL. Library version **0.1**.
 
 ```flatppl
 flatppl_compat = "0.1"
@@ -14,22 +12,8 @@ P = nu.matter_probabilities(0.6, 295, p, 1.4, false)
 appearance = P[1, 2] % nu_mu -> nu_e
 ```
 
-Energy uses GeV, baseline km, mass splittings eV² and electron density mol/cm³.
-Probability rows are final flavour and columns initial flavour, ordered
-electron, muon, tau. All parameters are explicit. The library supplies no
-experiment data, density profile, flux model or priors.
+Energy uses GeV, baseline km, mass splittings eV², and electron density mol/cm³. Matrix rows index final flavour. Columns index initial flavour. Flavour order is electron, muon, tau.
 
-[Run the appearance example in the playground](https://live.flatppl.org/#model=https%3A%2F%2Fraw.githubusercontent.com%2Fflatppl-community%2Fflatppl-physics-neutrinos%2Fmain%2Fexamples%2Fplayground.flatppl&target=Pi_post).
-It fits one mixing angle from synthetic counts with an explicit prior,
-observation kernel and posterior, and pins
-[library revision 608fa00](https://github.com/flatppl-community/flatppl-physics-neutrinos/tree/608fa0076fe22a9dd7634e35a5b1365b12af2403).
+The [appearance example](examples/playground.flatppl) infers one mixing angle from synthetic counts with an explicit prior and observation kernel.
 
-Run the independent complex-rotation, Taylor-propagation and analytic checks
-with Python 3.10+ and Node 24+:
-
-```sh
-FLATPPL_JS_DIR=/path/to/flatppl-js python tests/check_math.py
-```
-
-The [runtime fixture](tests/runtime.flatppl) and `runtime_values` in the checker
-also support StableHLO value, gradient and batching checks.
+See the reference for definitions, domains, numerical limits, and validation commands.
