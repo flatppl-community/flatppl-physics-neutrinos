@@ -6,7 +6,7 @@ Infer a mixing angle from four illustrative electron-neutrino counts at a
 synthetic and do not represent an experiment's likelihood or flux model.
 %%%
 flatppl_compat = "0.1"
-nu = load_module("../main.flatppl")
+nu = load_module("https://raw.githubusercontent.com/flatppl-community/flatppl-physics-neutrinos/608fa0076fe22a9dd7634e35a5b1365b12af2403/main.flatppl")
 energies = [0.45, 0.6, 0.9, 1.2]
 trials = [1000, 1000, 1000, 1000]
 observed_data = [38, 48, 32, 21]
