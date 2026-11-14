@@ -8,7 +8,7 @@ Library version **0.1**.
 
 ```flatppl
 flatppl_compat = "0.1"
-nu = load_module("https://raw.githubusercontent.com/flatppl-community/flatppl-physics-neutrinos/main/main.flatppl")
+nu = load_module("https://raw.githubusercontent.com/flatppl-community/flatppl-physics-neutrinos/608fa0076fe22a9dd7634e35a5b1365b12af2403/main.flatppl")
 p = nu.parameters(0.59, 0.15, 0.78, 1.2, 7.5e-5, 2.5e-3)
 P = nu.matter_probabilities(0.6, 295, p, 1.4, false)
 appearance = P[1, 2] % nu_mu -> nu_e
@@ -19,8 +19,10 @@ Probability rows are final flavour and columns initial flavour, ordered
 electron, muon, tau. All parameters are explicit. The library supplies no
 experiment data, density profile, flux model or priors.
 
-The [appearance example](examples/playground.flatppl) fits one mixing angle
-from synthetic counts with an explicit prior, observation kernel and posterior.
+[Run the appearance example in the playground](https://live.flatppl.org/#model=https%3A%2F%2Fraw.githubusercontent.com%2Fflatppl-community%2Fflatppl-physics-neutrinos%2Fmain%2Fexamples%2Fplayground.flatppl&target=Pi_post).
+It fits one mixing angle from synthetic counts with an explicit prior,
+observation kernel and posterior, and pins
+[library revision 608fa00](https://github.com/flatppl-community/flatppl-physics-neutrinos/tree/608fa0076fe22a9dd7634e35a5b1365b12af2403).
 
 Run the independent complex-rotation, Taylor-propagation and analytic checks
 with Python 3.10+ and Node 24+:
