@@ -233,3 +233,25 @@ also follow [Newtrinos.jl](https://github.com/philippeller/Newtrinos.jl), descri
 by [Eller and Schultheiß](https://arxiv.org/abs/2608.12940). The library uses its
 own FlatPPL implementation; its checker composes complex rotation matrices
 and a complex Taylor propagator independently.
+
+## Examples and validation
+
+Energy uses GeV, baseline km, mass splittings eV² and electron density mol/cm³.
+Probability rows are final flavour and columns initial flavour, ordered
+electron, muon, tau. All parameters are explicit. The library supplies no
+experiment data, density profile, flux model or priors.
+
+[Run the appearance example in the playground](https://live.flatppl.org/#model=https%3A%2F%2Fraw.githubusercontent.com%2Fflatppl-community%2Fflatppl-physics-neutrinos%2Fmain%2Fexamples%2Fplayground.flatppl&target=Pi_post).
+It fits one mixing angle from synthetic counts with an explicit prior,
+observation kernel and posterior, and pins
+[library revision 608fa00](https://github.com/flatppl-community/flatppl-physics-neutrinos/tree/608fa0076fe22a9dd7634e35a5b1365b12af2403).
+
+Run the independent complex-rotation, Taylor-propagation and analytic checks
+with Python 3.10+ and Node 24+:
+
+```sh
+FLATPPL_JS_DIR=/path/to/flatppl-js python tests/check_math.py
+```
+
+The [runtime fixture](../tests/runtime.flatppl) and `runtime_values` in the checker
+also support StableHLO value, gradient and batching checks.
