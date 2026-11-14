@@ -1,0 +1,12 @@
+%%%
+# Absolute mass observables
+
+Masses use eV. dm21 = m2²-m1² and signed dm31 = m3²-m1² use eV².
+%%%
+flatppl_compat = "0.1"
+% Returns [m1,m2,m3] for either hierarchy, with the supplied lightest mass.
+masses = (lightest, dm21, dm31) -> sqrt.(lightest ^ 2 .+ max(0, -dm31) .+ [0, dm21, dm31])
+beta_mass = (m, theta12, theta13) -> sqrt(cos(theta13) ^ 2 * (cos(theta12) ^ 2 * m[1] ^ 2 + sin(theta12) ^ 2 * m[2] ^ 2) + sin(theta13) ^ 2 * m[3] ^ 2)
+_majorana = (x, y, z, phase21, phase31) -> sqrt((x + y * cos(phase21) + z * cos(phase31)) ^ 2 + (y * sin(phase21) + z * sin(phase31)) ^ 2)
+% U includes diag(1,exp(i*alpha21/2),exp(i*alpha31/2)) on its right.
+majorana_mass = (m, theta12, theta13, delta, alpha21, alpha31) -> _majorana(cos(theta13) ^ 2 * cos(theta12) ^ 2 * m[1], cos(theta13) ^ 2 * sin(theta12) ^ 2 * m[2], sin(theta13) ^ 2 * m[3], alpha21, alpha31 - 2 * delta)

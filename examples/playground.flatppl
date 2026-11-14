@@ -1,0 +1,22 @@
+%%%
+# Muon-neutrino appearance
+
+Infer a mixing angle from four illustrative electron-neutrino counts at a
+295 km baseline. Matter has 1.4 mol of electrons per cm³. The counts are
+synthetic and do not represent an experiment's likelihood or flux model.
+%%%
+flatppl_compat = "0.1"
+nu = load_module("../main.flatppl")
+energies = [0.45, 0.6, 0.9, 1.2]
+trials = [1000, 1000, 1000, 1000]
+observed_data = [38, 48, 32, 21]
+theta13 ~ Uniform(interval(0.1, 0.2))
+appearance = (energy, angle) -> nu.matter_probabilities(energy, 295, nu.parameters(0.59, angle, 0.78, 1.2, 0.000075, 0.0025), 1.4, false)[1, 2]
+rates = appearance.(energies, theta13)
+observed ~ Binomial.(trials, rates)
+Pi_prior = lawof(record(theta13 = theta13))
+K_model = kernelof(record(observed = observed), theta13 = theta13)
+L = likelihoodof(K_model, record(observed = observed_data))
+Pi_post = bayesupdate(L, Pi_prior)
+theta_default = record(theta13 = 0.15)
+Theta = cartprod(theta13 = interval(0.1, 0.2))

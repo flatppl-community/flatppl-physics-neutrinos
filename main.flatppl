@@ -1,0 +1,25 @@
+%%%
+# Neutrino oscillations and mass observables
+
+Three-flavour vacuum and coherent matter propagation. Units and conventions
+are explicit in docs/reference.md.
+%%%
+flatppl_compat = "0.1"
+mixing = load_module("src/mixing.flatppl")
+propagation = load_module("src/propagation.flatppl")
+mass_observables = load_module("src/masses.flatppl")
+geometry = load_module("src/geometry.flatppl")
+parameters = mixing.parameters
+pmns = mixing.pmns
+vacuum_amplitude = propagation.vacuum_amplitude
+vacuum_probabilities = propagation.vacuum_probabilities
+matter_hamiltonian = propagation.matter_hamiltonian
+matter_amplitude = propagation.matter_amplitude
+matter_probabilities = propagation.matter_probabilities
+layered_amplitude = propagation.layered_amplitude
+layered_probabilities = propagation.layered_probabilities
+masses = mass_observables.masses
+beta_mass = mass_observables.beta_mass
+majorana_mass = mass_observables.majorana_mass
+atmospheric_baseline = geometry.atmospheric_baseline
+shell_path = geometry.shell_path

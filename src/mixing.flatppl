@@ -1,0 +1,22 @@
+%%%
+# Three-flavour mixing
+
+PDG convention U = R23 U13(delta) R12. Complex matrices are represented by
+record(re = real matrix, im = real matrix).
+%%%
+flatppl_compat = "0.1"
+% Angles in radians; dm21 and signed dm31 in eV².
+parameters = (theta12, theta13, theta23, delta, dm21, dm31) -> record(theta12 = theta12, theta13 = theta13, theta23 = theta23, delta = delta, dm21 = dm21, dm31 = dm31)
+_pmns(c12, s12, c13, s13, c23, s23, cd, sd) = record(
+    re = rowstack([
+        [c12*c13, s12*c13, s13*cd],
+        [-s12*c23-c12*s23*s13*cd, c12*c23-s12*s23*s13*cd, s23*c13],
+        [s12*s23-c12*c23*s13*cd, -c12*s23-s12*c23*s13*cd, c23*c13]
+    ]),
+    im = rowstack([
+        [0, 0, -s13*sd],
+        [-c12*s23*s13*sd, -s12*s23*s13*sd, 0],
+        [-c12*c23*s13*sd, -s12*c23*s13*sd, 0]
+    ]))
+% Rows are flavour e, mu, tau; columns are mass eigenstates 1, 2, 3.
+pmns = (theta12, theta13, theta23, delta) -> _pmns(cos(theta12), sin(theta12), cos(theta13), sin(theta13), cos(theta23), sin(theta23), cos(delta), sin(delta))

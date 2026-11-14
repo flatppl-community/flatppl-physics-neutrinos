@@ -1,0 +1,48 @@
+%%%
+# Coherent propagation
+
+Energy is in GeV, length in km, electron density in mol/cm³. Amplitude rows
+are final flavour and columns initial flavour. No probability normalization
+or phase averaging is applied.
+%%%
+flatppl_compat = "0.1"
+mixing = load_module("mixing.flatppl")
+linalg = standard_module("ext-linear-algebra", "0.1")
+phase_factor = 2.533865358078198
+avogadro = 6.02214076e23
+fermi_constant = 8.961877245622253e-38
+potential_per_density = sqrt(2) * fermi_constant * avogadro
+_mixing = (p, antineutrino) -> mixing.pmns(p.theta12, p.theta13, p.theta23, ifelse(antineutrino, -p.delta, p.delta))
+_probabilities = amplitude -> amplitude.re .^ 2 .+ amplitude.im .^ 2
+_phases = (energy, baseline, p) -> phase_factor * baseline / energy .* [0, p.dm21, p.dm31]
+_vacuum_products = (u, x, y) -> record(re = x * transpose(u.re) + y * transpose(u.im), im = y * transpose(u.re) - x * transpose(u.im))
+_vacuum = (u, c, s) -> _vacuum_products(u, u.re * c + u.im * s, u.im * c - u.re * s)
+_vacuum_phases = (u, phases) -> _vacuum(u, diagmat(cos.(phases)), diagmat(sin.(phases)))
+% Closed-form spectral propagation, with the common m1² phase removed.
+vacuum_amplitude = (energy, baseline, p, antineutrino) -> _vacuum_phases(_mixing(p, antineutrino), _phases(energy, baseline, p))
+vacuum_probabilities = (energy, baseline, p, antineutrino) -> _probabilities(vacuum_amplitude(energy, baseline, p, antineutrino))
+_vacuum_hamiltonian = (u, d) -> record(re = u.re * d * transpose(u.re) + u.im * d * transpose(u.im), im = u.im * d * transpose(u.re) - u.re * d * transpose(u.im))
+_mass_hamiltonian = (p, antineutrino) -> _vacuum_hamiltonian(_mixing(p, antineutrino), diagmat([0, p.dm21, p.dm31]))
+_matter = (h, energy, electron_density, antineutrino) -> record(re = h.re + diagmat([ifelse(antineutrino, -1, 1) * 2000000000.0 * energy * potential_per_density * electron_density, 0, 0]), im = h.im)
+% Mass-squared Hamiltonian in eV², before multiplication by phase_factor*L/E.
+matter_hamiltonian = (energy, p, electron_density, antineutrino) -> _matter(_mass_hamiltonian(p, antineutrino), energy, electron_density, antineutrino)
+% Real representation of multiplication by -iH, acting on [Re(psi), Im(psi)].
+_generator(r, i) = rowstack([
+    [i[1,1], i[1,2], i[1,3], r[1,1], r[1,2], r[1,3]],
+    [i[2,1], i[2,2], i[2,3], r[2,1], r[2,2], r[2,3]],
+    [i[3,1], i[3,2], i[3,3], r[3,1], r[3,2], r[3,3]],
+    [-r[1,1], -r[1,2], -r[1,3], i[1,1], i[1,2], i[1,3]],
+    [-r[2,1], -r[2,2], -r[2,3], i[2,1], i[2,2], i[2,3]],
+    [-r[3,1], -r[3,2], -r[3,3], i[3,1], i[3,2], i[3,3]]
+])
+_from_block(s) = record(
+    re = rowstack([[s[1,1], s[1,2], s[1,3]], [s[2,1], s[2,2], s[2,3]], [s[3,1], s[3,2], s[3,3]]]),
+    im = rowstack([[s[4,1], s[4,2], s[4,3]], [s[5,1], s[5,2], s[5,3]], [s[6,1], s[6,2], s[6,3]]]))
+_evolve = (energy, baseline, h) -> linalg.matexp(phase_factor * baseline / energy .* _generator(h.re, h.im))
+matter_amplitude = (energy, baseline, p, electron_density, antineutrino) -> _from_block(_evolve(energy, baseline, matter_hamiltonian(energy, p, electron_density, antineutrino)))
+matter_probabilities = (energy, baseline, p, electron_density, antineutrino) -> _probabilities(matter_amplitude(energy, baseline, p, electron_density, antineutrino))
+_layer_step = (state, layer, args) -> _evolve(args[1], layer.length, _matter(args[2], args[1], layer.electron_density, args[3])) * state
+_layered = (energy, h, layers, antineutrino) -> _from_block(scan(_layer_step, eye(6), layers, (energy, h, antineutrino))[lengthof(layers)])
+% Lengths and densities follow source-to-detector traversal order.
+layered_amplitude = (energy, p, lengths, electron_densities, antineutrino) -> _layered(energy, _mass_hamiltonian(p, antineutrino), table(length = lengths, electron_density = electron_densities), antineutrino)
+layered_probabilities = (energy, p, lengths, electron_densities, antineutrino) -> _probabilities(layered_amplitude(energy, p, lengths, electron_densities, antineutrino))

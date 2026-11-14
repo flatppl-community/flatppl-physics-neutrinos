@@ -1,0 +1,17 @@
+%%%
+# Spherical geometry
+
+All distances use one shared unit. No Earth radii, density profile, or
+production-height distribution is supplied implicitly.
+%%%
+flatppl_compat = "0.1"
+_baseline = (r, height_term, distance) -> ifelse(r >= 0, height_term / ifelse(distance + r > 0, distance + r, 1), distance - r)
+_baseline_distance = (r, height_term) -> _baseline(r, height_term, sqrt(r ^ 2 + height_term))
+% cos(zenith)=+1 is down-going and -1 is a diameter crossing.
+atmospheric_baseline = (cos_zenith, radius, height) -> _baseline_distance(radius * cos_zenith, height * (2 * radius + height))
+_half_lengths = half_chords -> half_chords .- cat([0], half_chords)[indicesof(half_chords)]
+% Keep inactive square-root derivatives finite away from shell tangencies.
+_half_chord = squared -> ifelse(squared > 0, sqrt(ifelse(squared > 0, squared, 1)), 0)
+_shell_path = (half_lengths, electron_densities) -> table(length = cat(reverse(half_lengths), half_lengths), electron_density = cat(reverse(electron_densities), electron_densities))
+% Full through-sphere chord only. Radii and densities are ordered inner to outer.
+shell_path = (impact, radii, electron_densities) -> _shell_path(_half_lengths(_half_chord.(radii .^ 2 .- impact ^ 2)), electron_densities)

@@ -1,0 +1,14 @@
+flatppl_compat = "0.1"
+nu = load_module("../main.flatppl")
+x = elementof(cartpow(reals, 10))
+p = nu.parameters(x[1], x[2], x[3], x[4], x[5], x[6])
+v = nu.vacuum_probabilities(x[7], x[8], p, false)
+m = nu.matter_probabilities(x[7], x[8], p, x[9], false)
+l = nu.layered_probabilities(x[7], p, [0.25 * x[8], 0.75 * x[8]], [x[9], 0.5 * x[9]], false)
+mass = nu.masses(x[10], x[5], x[6])
+beta = nu.beta_mass(mass, x[1], x[2])
+majorana = nu.majorana_mass(mass, x[1], x[2], x[4], 0.8, -0.6)
+baseline = nu.atmospheric_baseline(-0.6, 6371, 20)
+path = nu.shell_path(1, [2, 3], [2.5, 1.5])
+inputs = x
+outputs = (v, m, l, mass, beta, majorana, baseline, path.length)
