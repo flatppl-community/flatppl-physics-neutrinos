@@ -94,8 +94,10 @@ $3\times3$ matrix $P_{\beta\alpha}=|S_{\beta\alpha}|^2$ from
 `matter_hamiltonian(energy, p, electron_density, antineutrino)` returns the
 complex **mass-squared** Hamiltonian $H$ in eV²:
 
-$$H=U\,\mathrm{diag}(0,\Delta m_{21}^2,\Delta m_{31}^2)U^\dagger
- +\mathrm{diag}(a,0,0),\qquad a=2E V_{CC}.$$
+```math
+H=U\,\mathrm{diag}(0,\Delta m_{21}^2,\Delta m_{31}^2)U^\dagger
+ +\mathrm{diag}(a,0,0),\qquad a=2E V_{CC}.
+```
 
 The energy in the expression for $a$ is converted to eV.
 $V_{CC}=\sqrt{2}G_FN_A n_e$, using
@@ -114,8 +116,10 @@ and $Y_e$ is electrons per nucleon. Supply that conversion explicitly.
 $S=\exp(-iCLH/E)$ as a complex amplitude record, using `matter_hamiltonian`.
 It evaluates the equivalent real $6\times6$ exponential:
 
-$$\exp\left[\frac{CL}{E}
-\begin{pmatrix}\Im H&\Re H\\-\Re H&\Im H\end{pmatrix}\right].$$
+```math
+\exp\left[\frac{CL}{E}
+\begin{pmatrix}\Im H&\Re H\\-\Re H&\Im H\end{pmatrix}\right].
+```
 
 The upper-left and lower-left blocks are $\Re S$ and $\Im S$. At zero
 density this equals `vacuum_amplitude`, including its phase convention.
