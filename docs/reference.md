@@ -236,11 +236,6 @@ and a complex Taylor propagator independently.
 
 ## Examples and validation
 
-Energy uses GeV, baseline km, mass splittings eV² and electron density mol/cm³.
-Probability rows are final flavour and columns initial flavour, ordered
-electron, muon, tau. All parameters are explicit. The library supplies no
-experiment data, density profile, flux model or priors.
-
 [Run the appearance example in the playground](https://live.flatppl.org/#model=https%3A%2F%2Fraw.githubusercontent.com%2Fflatppl-community%2Fflatppl-physics-neutrinos%2Fmain%2Fexamples%2Fplayground.flatppl&target=Pi_post).
 It fits one mixing angle from synthetic counts with an explicit prior,
 observation kernel and posterior, and pins

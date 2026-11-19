@@ -12,7 +12,9 @@ P = nu.matter_probabilities(0.6, 295, p, 1.4, false)
 appearance = P[1, 2] % nu_mu -> nu_e
 ```
 
-Energy uses GeV, baseline km, mass splittings eV², and electron density mol/cm³. Matrix rows index final flavour. Columns index initial flavour. Flavour order is electron, muon, tau.
+Propagation returns $P_{\beta\alpha}=|S_{\beta\alpha}|^2$. At constant density, $S=\exp(-iCLH/E)$, with $C=2.533865358078198$ and mass-squared Hamiltonian $H$ in eV². Layers compose coherently as $S=S_n\cdots S_1$ in source-to-detector order.
+
+Energy uses GeV, baseline km, mass splittings eV², and electron density mol/cm³. Probabilities have shape `(3, 3)`, with final-flavour rows and initial-flavour columns, ordered electron, muon, tau. Amplitudes use `record(re, im)` with the same matrix shape.
 
 The [appearance example](examples/playground.flatppl) infers one mixing angle from synthetic counts with an explicit prior and observation kernel.
 
